@@ -1,3 +1,6 @@
+#Big thanks to https://github.com/patrickloeber/snake-ai-pytorch/blob/main/game.py
+#Did not use it for the game.py, but used it as a baseline for this agent.py and used his model.
+
 import torch
 import random
 import pygame

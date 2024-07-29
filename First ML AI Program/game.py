@@ -1,6 +1,3 @@
-#Big thanks to https://github.com/patrickloeber/snake-ai-pytorch/blob/main/game.py
-#Did not use it for the game.py, but used it as a baseline for this agent.py and used his model.
-
 import pygame
 import random
 import numpy as np
@@ -14,7 +11,7 @@ ADDENEMY = pygame.USEREVENT + 1
 enemy_killed_count = 0
 reward = 0
 
-#Dynamic
+# Dynamic
 n_games = 1
 
 class Direction(Enum):
@@ -40,10 +37,9 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.colliderect(player.rect):
             enemy_killed_count += 1
             reward += 10
-            #add print statement to debug here
             self.kill()
-            enemy_positions.pop(self.idx)
-            all_sprites.remove(self.idx)
+            enemy_positions.remove((self.rect.x, self.rect.y))
+            all_sprites.remove(self)
 
 class Player(pygame.sprite.Sprite):
     def __init__(self):
@@ -52,7 +48,6 @@ class Player(pygame.sprite.Sprite):
         self.surf.fill((255, 255, 255))
         self.rect = self.surf.get_rect()
         self.enemies = enemies
-        enemy_positions = [] #fucks up here after 6/7 rounds
         self.reset()
 
     def update(self, action):
@@ -104,7 +99,7 @@ class Player(pygame.sprite.Sprite):
         running = True
         gameOver = False
         self.frame_iteration = 0
-        # Reset the player's position and direction
+        enemy_positions = []
         self.rect.topleft = (SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
         self.direction = Direction.RIGHT
 
@@ -138,10 +133,9 @@ class Player(pygame.sprite.Sprite):
                     enemy_positions.clear()
                     return reward, gameOver, enemy_killed_count
 
-        pygame.display.flip() #mayeb delete
+        pygame.display.flip()
         clock.tick(60)
 
-        # Check for collision with enemies
         for enemy in enemies:
             enemy.update(self)
 
@@ -153,11 +147,11 @@ class Player(pygame.sprite.Sprite):
         screen.blit(font.render(f'Time: {counter}', True, (255, 255, 255)), (10, 100))
         text = font.render(f'Enemies killed: {enemy_killed_count}', True, (255, 255, 255))
         screen.blit(text, (10, 10))
-        screen.blit(self.surf, self.rect)  # Draw the player sprite
+        screen.blit(self.surf, self.rect)
         for enemy in enemies:
             screen.blit(enemy.surf, enemy.rect)
 
-#Initialization
+# Initialization
 pygame.init()
 pygame.font.init()
 
@@ -173,5 +167,3 @@ all_sprites.add(player)
 enemy_positions = []
 
 Point = namedtuple('Point', 'x, y')
-
-#need to make ai move the shit
